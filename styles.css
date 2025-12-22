@@ -1,0 +1,65 @@
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.site-header, .site-footer {
+  background: #0f172a;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-block: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+.field { margin-bottom: 1rem; }
+label { display: block; font-weight: 600; margin-bottom: .25rem; }
+
+input, select {
+  width: 100%;
+  padding: .5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: .6rem 1rem;
+  cursor: pointer;
+  background: #e5e7eb;
+}
+.btn.primary { background: #22c55e; color: #fff; }
+.btn.danger { background: #ef4444; color: #fff; }
+
+.actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: .5rem 0;
+}
+.history-list li {
+  background: #f1f5f9;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: .5rem;
+  margin-bottom: .5rem;
+  display: flex;
+  justify-content: space-between;
+}

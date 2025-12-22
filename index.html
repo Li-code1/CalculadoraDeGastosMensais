@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calculadora de Gastos Mensais</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Chart.js para gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- jsPDF para exportar PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>Calculadora de Gastos Mensais</h1>
+      <p class="subtitle">Controle seus gastos por categoria e acompanhe a evolução mensal.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Selecione o mês</h2>
+      <select id="mes">
+        <option>Janeiro</option><option>Fevereiro</option><option>Março</option>
+        <option>Abril</option><option>Maio</option><option>Junho</option>
+        <option>Julho</option><option>Agosto</option><option>Setembro</option>
+        <option>Outubro</option><option>Novembro</option><option>Dezembro</option>
+      </select>
+    </section>
+
+    <section class="card">
+      <h2>Informe seus gastos</h2>
+      <form id="form-gastos" novalidate>
+        <div class="field">
+          <label for="categoria">Categoria</label>
+          <select id="categoria" required>
+            <option>Alimentação</option>
+            <option>Lazer</option>
+            <option>Estudo</option>
+            <option>Transporte</option>
+            <option>Saúde</option>
+            <option>Moradia</option>
+            <option>Outros</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="valor">Valor (R$)</label>
+          <input id="valor" type="text" inputmode="decimal" placeholder="Ex.: 120,50" required />
+        </div>
+        <button type="submit" class="btn primary">Adicionar gasto</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Resumo</h2>
+      <ul id="lista-gastos" class="history-list"></ul>
+      <p><strong>Total acumulado:</strong> R$ <span id="total">0,00</span></p>
+      <div class="actions">
+        <button id="btn-pdf" class="btn">Baixar PDF</button>
+        <button id="btn-reset" class="btn danger">Resetar Dados</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Gráfico de Gastos por Categoria</h2>
+      <canvas id="grafico-categorias"></canvas>
+    </section>
+
+    <section class="card">
+      <h2>Comparativo de Gastos por Mês</h2>
+      <canvas id="grafico-meses"></canvas>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Feito com HTML, CSS, JavaScript, Chart.js e jsPDF 📊📄</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
