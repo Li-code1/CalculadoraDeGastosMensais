@@ -1,65 +1,104 @@
-body {
+/* Reset básico */
+* {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #f8fafc;
-  color: #0f172a;
-}
-
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-.site-header, .site-footer {
-  background: #0f172a;
-  color: #fff;
-  padding: 1rem;
-  text-align: center;
-}
-
-.card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 1rem;
-  margin-block: 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,.08);
-}
-
-.field { margin-bottom: 1rem; }
-label { display: block; font-weight: 600; margin-bottom: .25rem; }
-
-input, select {
-  width: 100%;
-  padding: .5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-}
-
-.btn {
-  border: none;
-  border-radius: 8px;
-  padding: .6rem 1rem;
-  cursor: pointer;
-  background: #e5e7eb;
-}
-.btn.primary { background: #22c55e; color: #fff; }
-.btn.danger { background: #ef4444; color: #fff; }
-
-.actions { display: flex; gap: .5rem; flex-wrap: wrap; }
-
-.history-list {
-  list-style: none;
   padding: 0;
-  margin: .5rem 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
-.history-list li {
-  background: #f1f5f9;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: .5rem;
-  margin-bottom: .5rem;
+
+body {
+  background-color: #f9fafb;
+  color: #111827;
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #2563eb;
+}
+
+/* Formulário */
+form {
   display: flex;
-  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+form input, form select, form button {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+form button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+form button:hover {
+  background-color: #1e40af;
+}
+
+/* Lista de gastos */
+#lista-gastos {
+  list-style: none;
+  margin-bottom: 1rem;
+}
+
+#lista-gastos li {
+  background: #e5e7eb;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+/* Total */
+p {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Botões extras */
+#btn-pdf, #btn-reset {
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+#btn-pdf {
+  background-color: #22c55e;
+  color: white;
+}
+
+#btn-pdf:hover {
+  opacity: 0.8;
+}
+
+#btn-reset {
+  background-color: #ef4444;
+  color: white;
+}
+
+#btn-reset:hover {
+  opacity: 0.8;
+}
+
+/* Gráficos */
+canvas {
+  margin-top: 1.5rem;
+  background: white;
+  padding: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
 }

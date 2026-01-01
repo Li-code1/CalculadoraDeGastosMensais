@@ -1,8 +1,9 @@
-// Estado
-let gastos = [];
-let totaisPorMes = {}; // { "Janeiro": 1234.56, ... }
+import { Gasto, Relatorio } from './classes.js';
+import { parseValorBR, formatBR, validarValor } from './utils.js';
 
-// Elementos
+const relatorio = new Relatorio();
+
+// Elementos DOM
 const form = document.getElementById('form-gastos');
 const lista = document.getElementById('lista-gastos');
 const totalEl = document.getElementById('total');
@@ -10,7 +11,7 @@ const mesEl = document.getElementById('mes');
 const btnPdf = document.getElementById('btn-pdf');
 const btnReset = document.getElementById('btn-reset');
 
-// Chart: categorias
+// Charts
 const ctxCategorias = document.getElementById('grafico-categorias').getContext('2d');
 const graficoCategorias = new Chart(ctxCategorias, {
   type: 'pie',
@@ -23,7 +24,6 @@ const graficoCategorias = new Chart(ctxCategorias, {
   }
 });
 
-// Chart: meses
 const ctxMeses = document.getElementById('grafico-meses').getContext('2d');
 const graficoMeses = new Chart(ctxMeses, {
   type: 'bar',
@@ -34,90 +34,66 @@ const graficoMeses = new Chart(ctxMeses, {
   options: { scales: { y: { beginAtZero: true } } }
 });
 
-// Util: normaliza valor para número (aceita vírgula)
-function parseValorBR(str) {
-  if (typeof str !== 'string') return NaN;
-  const normalizado = str.replace(/\./g, '').replace(',', '.').trim();
-  return Number(normalizado);
-}
-
-// Util: formata número para BR
-function formatBR(n) {
-  return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-// Submit gasto
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  const categoria = document.getElementById('categoria').value;
-  const valorStr = document.getElementById('valor').value;
-  const valor = parseValorBR(valorStr);
-  const mes = mesEl.value;
-
-  if (!isFinite(valor) || valor <= 0) {
-    alert('Informe um valor válido (ex.: 120,50).');
-    document.getElementById('valor').focus();
-    return;
-  }
-
-  gastos.push({ categoria, valor, mes });
-
-  // Atualiza totais por mês
-  totaisPorMes[mes] = (totaisPorMes[mes] || 0) + valor;
-
-  atualizarListaETotal();
-  atualizarGraficoCategorias();
-  atualizarGraficoMeses();
-
-  // Limpa e foca o campo valor
-  form.reset();
-  document.getElementById('valor').focus();
-});
-
-// Atualiza lista e soma na tela (recalcula total por redução)
+// Render principal
 function atualizarListaETotal() {
   lista.innerHTML = '';
-  gastos.forEach((g) => {
+  relatorio.gastos.forEach(g => {
     const li = document.createElement('li');
     li.textContent = `${g.categoria} (${g.mes}): R$ ${formatBR(g.valor)}`;
     lista.appendChild(li);
   });
 
-  const total = gastos.reduce((acc, g) => acc + g.valor, 0);
+  const total = relatorio.calcularTotal();
   totalEl.textContent = formatBR(total);
 }
 
-// Atualiza gráfico de categorias (soma por categoria)
 function atualizarGraficoCategorias() {
-  const categorias = [...new Set(gastos.map((g) => g.categoria))];
-  const valores = categorias.map((cat) =>
-    gastos.filter((g) => g.categoria === cat).reduce((soma, g) => soma + g.valor, 0)
-  );
-
-  graficoCategorias.data.labels = categorias;
-  graficoCategorias.data.datasets[0].data = valores;
+  const dados = relatorio.gastosPorCategoria();
+  graficoCategorias.data.labels = dados.map(d => d.categoria);
+  graficoCategorias.data.datasets[0].data = dados.map(d => d.total);
   graficoCategorias.update();
 }
 
-// Atualiza gráfico de meses (usa totaisPorMes)
 function atualizarGraficoMeses() {
-  const meses = Object.keys(totaisPorMes);
-  const valores = Object.values(totaisPorMes);
-
-  graficoMeses.data.labels = meses;
-  graficoMeses.data.datasets[0].data = valores;
+  graficoMeses.data.labels = Object.keys(relatorio.totaisPorMes);
+  graficoMeses.data.datasets[0].data = Object.values(relatorio.totaisPorMes);
   graficoMeses.update();
 }
 
-// Baixar PDF
+// Eventos
+form.addEventListener('submit', e => {
+  e.preventDefault();
+
+  const categoria = document.getElementById('categoria').value;
+  const valorStr = document.getElementById('valor').value;
+  const mes = mesEl.value;
+
+  const valor = parseValorBR(valorStr);
+
+  if (!validarValor(valor)) {
+    alert('Informe um valor válido (ex.: 120,50).');
+    document.getElementById('valor').focus();
+    return;
+  }
+
+  const gasto = new Gasto(categoria, valor, mes);
+  relatorio.adicionarGasto(gasto);
+
+  atualizarListaETotal();
+  atualizarGraficoCategorias();
+  atualizarGraficoMeses();
+
+  form.reset();
+  document.getElementById('valor').focus();
+});
+
 btnPdf.addEventListener('click', () => {
   const mesAtual = mesEl.value;
-  const linhas = gastos
-    .filter((g) => g.mes === mesAtual)
-    .map((g) => `${g.categoria}: R$ ${formatBR(g.valor)}`);
+  const linhas = relatorio.gastos
+    .filter(g => g.mes === mesAtual)
+    .map(g => `${g.categoria}: R$ ${formatBR(g.valor)}`);
 
-  const totalMes = (totaisPorMes[mesAtual] || 0);
+  const totalMes = (relatorio.totaisPorMes[mesAtual] || 0);
 
   const conteudo = [
     `Relatório de Gastos - ${mesAtual}`,
@@ -134,11 +110,10 @@ btnPdf.addEventListener('click', () => {
   doc.save(`gastos-${mesAtual}.pdf`);
 });
 
-// Reset
 btnReset.addEventListener('click', () => {
   if (confirm('Tem certeza que deseja resetar todos os dados?')) {
-    gastos = [];
-    totaisPorMes = {};
+    relatorio.gastos = [];
+    relatorio.totaisPorMes = {};
     lista.innerHTML = '';
     totalEl.textContent = formatBR(0);
 
@@ -151,3 +126,8 @@ btnReset.addEventListener('click', () => {
     graficoMeses.update();
   }
 });
+
+// Inicializa interface coerente ao carregar
+atualizarListaETotal();
+atualizarGraficoCategorias();
+atualizarGraficoMeses();
